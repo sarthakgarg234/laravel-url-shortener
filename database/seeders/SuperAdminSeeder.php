@@ -5,11 +5,21 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class SuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
+        $email = env('SUPERADMIN_EMAIL');
+        $password = env('SUPERADMIN_PASSWORD');
+
+        if (empty($email) || empty($password)) {
+            throw new RuntimeException(
+                'Set SUPERADMIN_EMAIL and SUPERADMIN_PASSWORD in .env before seeding.'
+            );
+        }
+
         DB::statement(
             'INSERT IGNORE INTO companies (name, created_at, updated_at)
              VALUES (?, NOW(), NOW())',
@@ -20,10 +30,9 @@ class SuperAdminSeeder extends Seeder
             ->where('name', 'Default Company')
             ->value('id');
 
-        $email = env('SUPERADMIN_EMAIL', 'superadmin@example.com');
-        $password = Hash::make(
-            env('SUPERADMIN_PASSWORD', 'ChangeMe_2026!')
-        );
+        if (!$companyId) {
+            throw new RuntimeException('Default Company could not be created.');
+        }
 
         DB::statement(
             'INSERT IGNORE INTO users
@@ -32,7 +41,7 @@ class SuperAdminSeeder extends Seeder
             [
                 'Super Admin',
                 $email,
-                $password,
+                Hash::make($password),
                 $companyId,
                 'SuperAdmin',
                 true,

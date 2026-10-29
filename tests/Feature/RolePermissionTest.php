@@ -30,4 +30,9 @@ class RolePermissionTest extends TestCase
     {
         $this->get('/s/abc12345')->assertNotFound();
     }
+
+    public function test_unknown_short_url_code_never_redirects(): void
+    {
+        $this->get('/s/unknowncode')->assertNotFound();
+    }
 }
