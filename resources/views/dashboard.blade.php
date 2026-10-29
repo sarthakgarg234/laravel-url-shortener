@@ -34,6 +34,27 @@
         <p class="success">{{ session('success') }}</p>
     @endif
 
+    @if (session('invitation_url'))
+    <div class="panel">
+        <h3>Invitation Link</h3>
+        <p>Share this link with the invited user:</p>
+        <input
+            type="text"
+            value="{{ session('invitation_url') }}"
+            readonly
+            onclick="this.select()"
+        >
+        <button
+            type="button"
+            onclick="navigator.clipboard.writeText(
+                @js(session('invitation_url'))
+            ).then(() => alert('Invitation link copied!'))"
+        >
+            Copy Invitation Link
+        </button>
+    </div>
+@endif
+
     @if (in_array(auth()->user()->role, ['Sales', 'Manager'], true))
         <div class="panel">
             <h2>Create Short URL</h2>

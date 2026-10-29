@@ -33,3 +33,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/s/{code}', [ShortUrlController::class, 'resolve'])
     ->name('short-urls.resolve');
+
+Route::get('/invitations/{token}', [
+    App\Http\Controllers\InvitationController::class,
+    'showAcceptForm'
+])->name('invitations.accept.form');
+
+Route::post('/invitations/{token}', [
+    App\Http\Controllers\InvitationController::class,
+    'accept'
+])->name('invitations.accept');
